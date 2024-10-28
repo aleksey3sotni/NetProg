@@ -1,9 +1,0 @@
-*.o
-*.so
-*.a
-*.la
-*.dll
-*.pyc
-*.pyo
-*.swp
-*.bak
