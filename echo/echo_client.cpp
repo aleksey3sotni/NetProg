@@ -30,6 +30,7 @@ int main() {
     // Подключение к серверу
     if (connect(sockfd, (sockaddr*)&server_addr, sizeof(server_addr)) < 0) {
         cerr << "Ошибка подключения к серверу" << endl;
+        close(sockfd); // Закрытие сокета в случае ошибки
         return 1;
     }
 
@@ -41,16 +42,20 @@ int main() {
     // Отправка сообщения
     if (send(sockfd, message.c_str(), message.length(), 0) < 0) {
         cerr << "Ошибка отправки сообщения" << endl;
+        close(sockfd); // Закрытие сокета в случае ошибки
         return 1;
     }
 
     // Получение ответа
-    char buffer[1024];
-    int bytes_received = recv(sockfd, buffer, sizeof(buffer), 0);
+    char buffer[1024] = {0}; // Инициализация буфера
+    int bytes_received = recv(sockfd, buffer, sizeof(buffer) - 1, 0);
     if (bytes_received < 0) {
         cerr << "Ошибка получения ответа" << endl;
+        close(sockfd); // Закрытие сокета в случае ошибки
         return 1;
     }
+
+    buffer[bytes_received] = '\0'; // Завершение строки нулевым символом
 
     // Вывод ответа
     cout << "Ответ сервера: " << buffer << endl;
